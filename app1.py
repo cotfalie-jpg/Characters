@@ -58,13 +58,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título principal
-st.markdown('<h1 class="main-header">🔍 Reconocimiento Óptico de Caracteres</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">Reconocimiento Óptico de Caracteres</h1>', unsafe_allow_html=True)
 
 # Crear columnas para el diseño
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown('<h2 class="sub-header">📸 Captura de Imagen</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">Captura de Imagen</h2>', unsafe_allow_html=True)
     
     # Contenedor para la cámara con estilo
     with st.container():
@@ -114,7 +114,7 @@ if img_file_buffer is not None:
     
     # Mostrar resultados
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<h2 class="sub-header">📄 Texto Detectado</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">Texto Detectado</h2>', unsafe_allow_html=True)
     
     if text.strip():
         # Contenedor estilizado para el texto resultante
@@ -122,7 +122,7 @@ if img_file_buffer is not None:
         st.text_area("Texto extraído:", text, height=200, key="texto_extraido")
         
         # Botón para copiar texto
-        if st.button("📋 Copiar Texto"):
+        if st.button("Copiar Texto"):
             st.code(text)
             st.success("¡Texto copiado al portapapeles!")
         st.markdown('</div>', unsafe_allow_html=True)
