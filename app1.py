@@ -188,19 +188,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título principal
-st.markdown('<h1 class="main-header">🔍 OCR VISION PRO</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">🔍 OCR APP</h1>', unsafe_allow_html=True)
 
 # Crear columnas para el diseño
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown('<h2 class="sub-header">📷 CAPTURA DE IMAGEN</h2>', unsafe_allow_html=True)
+    st.markdown('<h1 class="sub-header">CAPTURA DE IMAGEN</h1>', unsafe_allow_html=True)
     
     # Contenedor para la cámara con estilo tecnológico
     with st.container():
-        st.markdown('<div class="camera-container">', unsafe_allow_html=True)
         img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
-        st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
     st.markdown('<h2 class="sub-header">⚙️ CONFIGURACIÓN</h2>', unsafe_allow_html=True)
