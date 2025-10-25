@@ -194,25 +194,25 @@ st.markdown('<h1 class="main-header">🔍 OCR APP</h1>', unsafe_allow_html=True)
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown('<h1 class="sub-header">CAPTURA DE IMAGEN</h1>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">CAPTURA DE IMAGEN</h2>', unsafe_allow_html=True)
     
     # Contenedor para la cámara con estilo tecnológico
     with st.container():
         img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
 
 with col2:
-    st.markdown('<h1 class="sub-header">⚙️ CONFIGURACIÓN</h1>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">⚙️ CONFIGURACIÓN</h2>', unsafe_allow_html=True)
     
     # Panel de configuración estilo glassmorphism
     with st.container():
-        st.markdown("### 🎛️ MODO DE PROCESAMIENTO")
+        st.markdown("## MODO DE PROCESAMIENTO")
         filtro = st.radio(
             "Selecciona el modo de procesamiento:",
             ('Con Filtro', 'Sin Filtro'),
             help="El filtro invierte los colores para mejorar la detección en texto claro sobre fondo oscuro"
         )
     
-        st.markdown("### 💡 INSTRUCCIONES")
+        st.markdown("## INSTRUCCIONES")
         st.markdown("""
         **1.** 📸 Captura una imagen nítida del texto  
         **2.** ⚙️ Selecciona el modo de filtro apropiado  
@@ -259,7 +259,7 @@ if img_file_buffer is not None:
         st.text_area("**TEXTO EXTRAÍDO:**", text, height=250, key="texto_extraido")
         
         # Botón para copiar texto
-        if st.button("📋 COPIAR TEXTO AL PORTAPAPELES"):
+        if st.button("COPIAR TEXTO AL PORTAPAPELES"):
             st.code(text)
             st.success("✅ ¡Texto copiado exitosamente!")
         st.markdown('</div>', unsafe_allow_html=True)
@@ -274,31 +274,3 @@ if img_file_buffer is not None:
         - Acerca más la cámara al texto
         - Intenta con una imagen más nítida
         """)
-
-# Pie de página tecnológico
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown(
-    """
-    <div style='
-        text-align: center; 
-        color: #00d4ff; 
-        margin-top: 2rem; 
-        padding: 2rem; 
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
-        backdrop-filter: blur(10px);
-    '>
-        <div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;'>
-            🚀 OCR VISION PRO
-        </div>
-        <div style='color: rgba(255, 255, 255, 0.8);'>
-            Powered by Streamlit • OpenCV • Tesseract OCR
-        </div>
-        <div style='color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 0.5rem;'>
-            Tecnología de vanguardia para reconocimiento de texto
-        </div>
-    </div>
-    """, 
-    unsafe_allow_html=True
-)
