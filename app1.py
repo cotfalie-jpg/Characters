@@ -6,153 +6,231 @@ from PIL import Image
 
 # Configuración de la página
 st.set_page_config(
-    page_title="OCR App",
-    page_icon="📸",
+    page_title="OCR Vision Pro",
+    page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Aplicar estilos CSS personalizados mejorados
+# Aplicar estilos CSS con tema tecnológico oscuro
 st.markdown("""
 <style>
+    /* Fondo principal con gradiente tecnológico */
+    .main {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        color: #ffffff;
+    }
+    
+    /* Header principal con efecto neón */
     .main-header {
-        font-size: 3rem;
-        color: #1E3A8A;
+        font-size: 3.5rem;
         text-align: center;
         margin-bottom: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-weight: 800;
+        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #7c4dff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        font-family: 'Segoe UI', sans-serif;
     }
+    
+    /* Headers secundarios */
     .sub-header {
-        font-size: 1.5rem;
-        color: #4F46E5;
-        margin-bottom: 1rem;
-        font-weight: 600;
-        border-bottom: 2px solid #E0E7FF;
+        font-size: 1.8rem;
+        color: #00d4ff;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        border-bottom: 3px solid #00d4ff;
         padding-bottom: 0.5rem;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
     }
-    .sidebar .sidebar-content {
-        background-color: #F8FAFC;
-        border-right: 1px solid #E2E8F0;
+    
+    /* Contenedor de cámara con borde glowy */
+    .camera-container {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+        border: 2px solid #00d4ff;
+        background: rgba(0, 212, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
+    
+    /* Panel de configuración glassmorphism */
+    .config-box {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Result box con efecto de cristal */
+    .result-box {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 2rem;
+        border-left: 5px solid #00d4ff;
+        margin-top: 2rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Botones modernos */
+    .stButton button {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+        color: #0f0f23;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        width: 100%;
+    }
+    
+    .stButton button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
+        background: linear-gradient(135deg, #0099ff 0%, #00d4ff 100%);
+    }
+    
+    /* Radio buttons personalizados */
     .stRadio > div {
         flex-direction: row;
-        align-items: center;
-        gap: 10px;
-    }
-    .stRadio > label {
-        font-weight: 500;
-        color: #374151;
-    }
-    .result-box {
-        background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+        gap: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
         border-radius: 12px;
-        padding: 1.5rem;
-        border-left: 5px solid #3B82F6;
-        margin-top: 2rem;
-        box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .camera-container {
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px -8px rgba(59, 130, 246, 0.3);
-        border: 2px solid #E0F2FE;
+    
+    .stRadio label {
+        font-weight: 600;
+        color: #ffffff !important;
+        font-size: 1rem;
     }
+    
+    /* Dividers con efecto glowy */
     .divider {
-        border-top: 2px solid #E2E8F0;
-        margin: 1.5rem 0;
+        border-top: 2px solid rgba(0, 212, 255, 0.3);
+        margin: 2rem 0;
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
     }
-    .config-box {
-        background: #F8FAFC;
+    
+    /* Text area personalizado */
+    .stTextArea textarea {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px solid rgba(0, 212, 255, 0.3) !important;
+        border-radius: 12px !important;
+        color: #ffffff !important;
+        font-size: 1rem !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    .stTextArea textarea:focus {
+        border-color: #00d4ff !important;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    /* Métricas personalizadas */
+    .stMetric {
+        background: rgba(255, 255, 255, 0.05);
         border-radius: 12px;
-        padding: 1.5rem;
-        border: 1px solid #E2E8F0;
-        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
+    
+    /* Info box */
     .info-box {
-        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
-        border-radius: 12px;
+        background: rgba(0, 212, 255, 0.1);
+        border-radius: 16px;
         padding: 1.5rem;
-        border-left: 5px solid #10B981;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        backdrop-filter: blur(10px);
     }
-    .copy-button {
-        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
+    
+    /* Spinner personalizado */
+    .stSpinner > div {
+        border-color: #00d4ff transparent transparent transparent !important;
+    }
+    
+    /* Ajustes generales de texto */
+    .stMarkdown, .stText, .stLabel {
+        color: #ffffff !important;
+    }
+    
+    /* Scrollbar personalizado */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+        border-radius: 10px;
+    }
+    
+    /* Efectos de hover en contenedores */
+    .config-box:hover, .result-box:hover {
+        border-color: rgba(0, 212, 255, 0.5);
         transition: all 0.3s ease;
-    }
-    .copy-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    .stButton button {
-        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    .stButton button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Título principal
-st.markdown('<h1 class="main-header">🔍 Reconocimiento Óptico de Caracteres</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">🔍 OCR VISION PRO</h1>', unsafe_allow_html=True)
 
 # Crear columnas para el diseño
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown('<h2 class="sub-header">📷 Captura de Imagen</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">📷 CAPTURA DE IMAGEN</h2>', unsafe_allow_html=True)
     
-    # Contenedor para la cámara con estilo
+    # Contenedor para la cámara con estilo tecnológico
     with st.container():
         st.markdown('<div class="camera-container">', unsafe_allow_html=True)
         img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    st.markdown('<h2 class="sub-header">⚙️ Configuración</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">⚙️ CONFIGURACIÓN</h2>', unsafe_allow_html=True)
     
-    # Panel de configuración estilizado
+    # Panel de configuración estilo glassmorphism
     with st.container():
         st.markdown('<div class="config-box">', unsafe_allow_html=True)
-        st.markdown("### 🎛️ Filtros de Procesamiento")
+        st.markdown("### 🎛️ MODO DE PROCESAMIENTO")
         filtro = st.radio(
             "Selecciona el modo de procesamiento:",
             ('Con Filtro', 'Sin Filtro'),
-            help="El filtro invierte los colores de la imagen para mejorar la detección de texto en algunos casos"
+            help="El filtro invierte los colores para mejorar la detección en texto claro sobre fondo oscuro"
         )
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="info-box">', unsafe_allow_html=True)
-        st.markdown("### 💡 Información")
+        st.markdown("### 💡 INSTRUCCIONES")
         st.markdown("""
-        **Instrucciones:**
-        1. 📸 Toma una foto del texto
-        2. ⚙️ Selecciona el modo de filtro
-        3. 📝 El texto aparecerá automáticamente
+        **1.** 📸 Captura una imagen nítida del texto  
+        **2.** ⚙️ Selecciona el modo de filtro apropiado  
+        **3.** 📝 El texto detectado aparecerá automáticamente  
         
-        **Consejo:** Usa "Con Filtro" para texto claro sobre fondo oscuro
+        **💡 Tip:** Usa 'Con Filtro' para texto claro sobre fondos oscuros
         """)
         st.markdown('</div>', unsafe_allow_html=True)
 
 # Procesamiento de la imagen
 if img_file_buffer is not None:
     # Mostrar indicador de procesamiento
-    with st.spinner('🔄 Procesando imagen y detectando texto...'):
+    with st.spinner('🔄 PROCESANDO IMAGEN - ANALIZANDO TEXTO...'):
         # To read image file buffer with OpenCV:
         bytes_data = img_file_buffer.getvalue()
         cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
@@ -169,7 +247,7 @@ if img_file_buffer is not None:
     
     # Mostrar resultados
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<h2 class="sub-header">📄 Texto Detectado</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">📄 TEXTO DETECTADO</h2>', unsafe_allow_html=True)
     
     if text.strip():
         # Contenedor estilizado para el texto resultante
@@ -178,38 +256,55 @@ if img_file_buffer is not None:
         # Mostrar estadísticas rápidas
         col_stats1, col_stats2, col_stats3 = st.columns(3)
         with col_stats1:
-            st.metric("Caracteres", len(text))
+            st.metric("🔤 Caracteres", len(text))
         with col_stats2:
-            st.metric("Palabras", len(text.split()))
+            st.metric("📝 Palabras", len(text.split()))
         with col_stats3:
-            st.metric("Líneas", len(text.split('\n')))
+            st.metric("📊 Líneas", len(text.split('\n')))
         
-        st.text_area("**Texto extraído:**", text, height=200, key="texto_extraido")
+        st.text_area("**TEXTO EXTRAÍDO:**", text, height=250, key="texto_extraido")
         
         # Botón para copiar texto
-        col1, col2 = st.columns([1, 4])
-        with col1:
-            if st.button("📋 Copiar Texto", use_container_width=True):
-                st.code(text)
-                st.success("✅ ¡Texto copiado al portapapeles!")
+        if st.button("📋 COPIAR TEXTO AL PORTAPAPELES"):
+            st.code(text)
+            st.success("✅ ¡Texto copiado exitosamente!")
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.error("""
-        ❌ No se detectó texto en la imagen. 
+        ❌ **NO SE DETECTÓ TEXTO EN LA IMAGEN** 
         
-        **Sugerencias:**
-        - Asegúrate de que el texto esté bien enfocado
-        - Prueba con el otro modo de filtro
-        - Verifica que haya suficiente contraste
+        **Posibles soluciones:**
+        - Asegúrate de que el texto esté bien enfocado y iluminado
+        - Prueba alternando entre los modos de filtro
+        - Verifica que haya suficiente contraste entre texto y fondo
         - Acerca más la cámara al texto
+        - Intenta con una imagen más nítida
         """)
 
-# Pie de página
+# Pie de página tecnológico
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 st.markdown(
-    "<div style='text-align: center; color: #64748B; margin-top: 2rem; padding: 1.5rem; background: #F8FAFC; border-radius: 10px;'>"
-    "🛠️ Aplicación de OCR desarrollada con Streamlit | "
-    "Usando OpenCV y Tesseract OCR"
-    "</div>", 
+    """
+    <div style='
+        text-align: center; 
+        color: #00d4ff; 
+        margin-top: 2rem; 
+        padding: 2rem; 
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        backdrop-filter: blur(10px);
+    '>
+        <div style='font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;'>
+            🚀 OCR VISION PRO
+        </div>
+        <div style='color: rgba(255, 255, 255, 0.8);'>
+            Powered by Streamlit • OpenCV • Tesseract OCR
+        </div>
+        <div style='color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 0.5rem;'>
+            Tecnología de vanguardia para reconocimiento de texto
+        </div>
+    </div>
+    """, 
     unsafe_allow_html=True
 )
