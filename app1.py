@@ -201,20 +201,17 @@ with col1:
         img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
 
 with col2:
-    st.markdown('<h2 class="sub-header">⚙️ CONFIGURACIÓN</h2>', unsafe_allow_html=True)
+    st.markdown('<h1 class="sub-header">⚙️ CONFIGURACIÓN</h1>', unsafe_allow_html=True)
     
     # Panel de configuración estilo glassmorphism
     with st.container():
-        st.markdown('<div class="config-box">', unsafe_allow_html=True)
         st.markdown("### 🎛️ MODO DE PROCESAMIENTO")
         filtro = st.radio(
             "Selecciona el modo de procesamiento:",
             ('Con Filtro', 'Sin Filtro'),
             help="El filtro invierte los colores para mejorar la detección en texto claro sobre fondo oscuro"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        st.markdown('<div class="info-box">', unsafe_allow_html=True)
+    
         st.markdown("### 💡 INSTRUCCIONES")
         st.markdown("""
         **1.** 📸 Captura una imagen nítida del texto  
@@ -223,7 +220,6 @@ with col2:
         
         **💡 Tip:** Usa 'Con Filtro' para texto claro sobre fondos oscuros
         """)
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # Procesamiento de la imagen
 if img_file_buffer is not None:
