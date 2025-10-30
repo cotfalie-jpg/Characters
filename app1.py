@@ -4,273 +4,171 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
-# Configuración de la página
+# -------------------------------------------------------
+# CONFIGURACIÓN DE PÁGINA
+# -------------------------------------------------------
 st.set_page_config(
-    page_title="OCR Vision Pro",
-    page_icon="🔍",
+    page_title="BAE OCR 💛",
+    page_icon="🍼",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Aplicar estilos CSS con tema tecnológico oscuro
+# -------------------------------------------------------
+# ESTILOS VISUALES — ESTILO BAE 🌼
+# -------------------------------------------------------
 st.markdown("""
 <style>
-    /* Fondo principal con gradiente tecnológico */
-    .main {
-        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-        color: #ffffff;
+    /* Fondo general pastel */
+    [data-testid="stAppViewContainer"] {
+        background-color: #FFF8EA;
+        color: #3C3C3C;
+        font-family: 'Poppins', sans-serif;
     }
-    
-    /* Header principal con efecto neón */
+
+    [data-testid="stSidebar"] {
+        background-color: #FFF2C3;
+        border-right: 2px solid #DD8E6B30;
+    }
+
+    /* Encabezados principales */
+    h1, h2, h3 {
+        color: #DD8E6B;
+        font-weight: 700;
+    }
+
     .main-header {
-        font-size: 3.5rem;
         text-align: center;
-        margin-bottom: 2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #7c4dff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-        font-family: 'Segoe UI', sans-serif;
+        font-size: 3rem;
+        color: #DD8E6B;
+        margin-top: 0.5em;
     }
-    
-    /* Headers secundarios */
-    .sub-header {
-        font-size: 1.8rem;
-        color: #00d4ff;
-        margin-bottom: 1.5rem;
-        font-weight: 700;
-        border-bottom: 3px solid #00d4ff;
-        padding-bottom: 0.5rem;
-        text-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-    }
-    
-    /* Contenedor de cámara con borde glowy */
-    .camera-container {
+
+    /* Contenedores con efecto suave */
+    .glass-box {
+        background-color: #FFFFFFCC;
         border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
-        border: 2px solid #00d4ff;
-        background: rgba(0, 212, 255, 0.1);
-        backdrop-filter: blur(10px);
-    }
-    
-    /* Panel de configuración glassmorphism */
-    .config-box {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 20px;
-        padding: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(15px);
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Result box con efecto de cristal */
-    .result-box {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 2rem;
-        border-left: 5px solid #00d4ff;
-        margin-top: 2rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Botones modernos */
-    .stButton button {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
-        color: #0f0f23;
-        border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
-        width: 100%;
-    }
-    
-    .stButton button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
-        background: linear-gradient(135deg, #0099ff 0%, #00d4ff 100%);
-    }
-    
-    /* Radio buttons personalizados */
-    .stRadio > div {
-        flex-direction: row;
-        gap: 15px;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 1rem;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .stRadio label {
-        font-weight: 600;
-        color: #ffffff !important;
-        font-size: 1rem;
-    }
-    
-    /* Dividers con efecto glowy */
-    .divider {
-        border-top: 2px solid rgba(0, 212, 255, 0.3);
-        margin: 2rem 0;
-        box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
-    }
-    
-    /* Text area personalizado */
-    .stTextArea textarea {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 2px solid rgba(0, 212, 255, 0.3) !important;
-        border-radius: 12px !important;
-        color: #ffffff !important;
-        font-size: 1rem !important;
-        font-family: 'Courier New', monospace !important;
-    }
-    
-    .stTextArea textarea:focus {
-        border-color: #00d4ff !important;
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2) !important;
-    }
-    
-    /* Métricas personalizadas */
-    .stMetric {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        padding: 1rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Info box */
-    .info-box {
-        background: rgba(0, 212, 255, 0.1);
-        border-radius: 16px;
         padding: 1.5rem;
-        border: 1px solid rgba(0, 212, 255, 0.3);
-        backdrop-filter: blur(10px);
+        box-shadow: 0px 4px 20px rgba(221,142,107,0.15);
+        border: 1px solid #DD8E6B25;
     }
-    
-    /* Spinner personalizado */
-    .stSpinner > div {
-        border-color: #00d4ff transparent transparent transparent !important;
-    }
-    
-    /* Ajustes generales de texto */
-    .stMarkdown, .stText, .stLabel {
-        color: #ffffff !important;
-    }
-    
-    /* Scrollbar personalizado */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
-        border-radius: 10px;
-    }
-    
-    /* Efectos de hover en contenedores */
-    .config-box:hover, .result-box:hover {
-        border-color: rgba(0, 212, 255, 0.5);
+
+    /* Botones */
+    .stButton > button {
+        background-color: #C6E2E3;
+        color: #3C3C3C;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0.6em 1.2em;
         transition: all 0.3s ease;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.05);
+    }
+
+    .stButton > button:hover {
+        background-color: #DD8E6B;
+        color: white;
+        transform: scale(1.03);
+    }
+
+    /* Áreas de texto */
+    .stTextArea textarea {
+        border-radius: 10px !important;
+        border: 1px solid #DD8E6B40 !important;
+        background-color: #FFFFFF !important;
+        color: #3C3C3C !important;
+    }
+
+    /* Métricas */
+    [data-testid="stMetricValue"] {
+        color: #DD8E6B !important;
+        font-weight: 700;
+    }
+
+    /* Separador */
+    .divider {
+        border-top: 2px solid #DD8E6B20;
+        margin: 2rem 0;
+    }
+
+    /* Scroll suave */
+    ::-webkit-scrollbar-thumb {
+        background-color: #DD8E6B50;
+        border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Título principal
-st.markdown('<h1 class="main-header">🔍 OCR APP</h1>', unsafe_allow_html=True)
+# -------------------------------------------------------
+# INTERFAZ PRINCIPAL
+# -------------------------------------------------------
+st.image("logo_bae.png", width=140)
+st.markdown('<h1 class="main-header">🍼 OCR con BAE</h1>', unsafe_allow_html=True)
+st.write("Convierte imágenes en texto con un toque cálido y humano 🌷")
 
-# Crear columnas para el diseño
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    st.markdown('<h2 class="sub-header">CAPTURA DE IMAGEN</h2>', unsafe_allow_html=True)
-    
-    # Contenedor para la cámara con estilo tecnológico
-    with st.container():
-        img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
+    st.markdown("### 📸 Captura tu imagen")
+    st.markdown('<div class="glass-box">', unsafe_allow_html=True)
+    img_file_buffer = st.camera_input("Toma una foto para analizar el texto", label_visibility="collapsed")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    st.markdown('<h2 class="sub-header">⚙️ CONFIGURACIÓN</h2>', unsafe_allow_html=True)
-    
-    # Panel de configuración estilo glassmorphism
-    with st.container():
-        st.markdown("## MODO DE PROCESAMIENTO")
-        filtro = st.radio(
-            "Selecciona el modo de procesamiento:",
-            ('Con Filtro', 'Sin Filtro'),
-            help="El filtro invierte los colores para mejorar la detección en texto claro sobre fondo oscuro"
-        )
-    
-        st.markdown("## INSTRUCCIONES")
-        st.markdown("""
-        **1.** 📸 Captura una imagen nítida del texto  
-        **2.** ⚙️ Selecciona el modo de filtro apropiado  
-        **3.** 📝 El texto detectado aparecerá automáticamente  
-        
-        **💡 Tip:** Usa 'Con Filtro' para texto claro sobre fondos oscuros
-        """)
+    st.markdown("### ⚙️ Configuración")
+    st.markdown('<div class="glass-box">', unsafe_allow_html=True)
+    filtro = st.radio(
+        "Modo de procesamiento:",
+        ('Con filtro', 'Sin filtro'),
+        help="Usa 'Con filtro' si el texto es claro sobre fondo oscuro."
+    )
+    st.markdown("""
+    **Instrucciones:**
+    1. Toma una imagen enfocada del texto.  
+    2. Selecciona el modo adecuado según el fondo.  
+    3. Presiona para procesar y ver el texto detectado 💛
+    """)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Procesamiento de la imagen
+# -------------------------------------------------------
+# PROCESAMIENTO DE LA IMAGEN
+# -------------------------------------------------------
 if img_file_buffer is not None:
-    # Mostrar indicador de procesamiento
-    with st.spinner('🔄 PROCESANDO IMAGEN - ANALIZANDO TEXTO...'):
-        # To read image file buffer with OpenCV:
+    with st.spinner("💛 Analizando tu imagen..."):
         bytes_data = img_file_buffer.getvalue()
         cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
-        
-        # Aplicar filtro si es necesario
-        if filtro == 'Con Filtro':
+
+        if filtro == 'Con filtro':
             cv2_img = cv2.bitwise_not(cv2_img)
-        
-        # Convertir a RGB para Tesseract
+
         img_rgb = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
-        
-        # Realizar OCR
         text = pytesseract.image_to_string(img_rgb)
-    
-    # Mostrar resultados
+
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<h2 class="sub-header">📄 TEXTO DETECTADO</h2>', unsafe_allow_html=True)
-    
+    st.markdown("### 📄 Texto detectado")
+
     if text.strip():
-        # Contenedor estilizado para el texto resultante
-        st.markdown('<div class="result-box">', unsafe_allow_html=True)
-        
-        # Mostrar estadísticas rápidas
-        col_stats1, col_stats2, col_stats3 = st.columns(3)
-        with col_stats1:
+        st.markdown('<div class="glass-box">', unsafe_allow_html=True)
+        colA, colB, colC = st.columns(3)
+        with colA:
             st.metric("🔤 Caracteres", len(text))
-        with col_stats2:
+        with colB:
             st.metric("📝 Palabras", len(text.split()))
-        with col_stats3:
+        with colC:
             st.metric("📊 Líneas", len(text.split('\n')))
-        
-        st.text_area("**TEXTO EXTRAÍDO:**", text, height=250, key="texto_extraido")
-        
-        # Botón para copiar texto
-        if st.button("COPIAR TEXTO AL PORTAPAPELES"):
+
+        st.text_area("Texto extraído:", text, height=250, key="texto_extraido")
+
+        if st.button("💾 Copiar texto"):
             st.code(text)
-            st.success("✅ ¡Texto copiado exitosamente!")
+            st.success("Texto copiado exitosamente 💛")
         st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.error("""
-        ❌ **NO SE DETECTÓ TEXTO EN LA IMAGEN** 
-        
-        **Posibles soluciones:**
-        - Asegúrate de que el texto esté bien enfocado y iluminado
-        - Prueba alternando entre los modos de filtro
-        - Verifica que haya suficiente contraste entre texto y fondo
-        - Acerca más la cámara al texto
-        - Intenta con una imagen más nítida
-        """)
+        st.error("❌ No se detectó texto. Prueba con más luz o mejor enfoque.")
+
+# -------------------------------------------------------
+# PIE DE PÁGINA
+# -------------------------------------------------------
+st.markdown("---")
+st.markdown("✨ Desarrollado con amor por **BAE | IA afectiva** 💛")
+
